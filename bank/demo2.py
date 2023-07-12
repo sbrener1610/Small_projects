@@ -126,10 +126,10 @@ for client in clients:
     """should never be necessary unless someone messes with the database manually.
        checking for validity of all database entries and demands to change them.
     """
-    if not isinstance(client["client_id"],int):
+    if not isinstance(client["client_id"],int) or client["client_id"]<=0:
         while True:
             try:
-                client.update({"client_id":int(input(f"ID {client['client_id']} is not an integer. Change: "))})
+                client.update({"client_id":int(input(f"ID {client['client_id']} is not a positive integer. Change: "))})
                 break
             except ValueError:
                 print("Try again")    
@@ -171,5 +171,7 @@ if len(set(list_of_id))!=len(clients):   #checks for double ID's
             print("Fixed!")
             break
 clients.sort(key=lambda x:x["client_id"]) #final sort
+banking.make_vip(clients)  # assigns VIP status
 banking.save_clients(clients) #and save database
+print(id(clients))
 main()

@@ -34,6 +34,7 @@ def add_client(clients, name, dob, balance):
     clients.append(         #Adds a client
         {"client_id": client_id, "name": name, "dob": dob, "balance": balance}
     )
+    make_vip(clients, client_id)
     save_clients(clients)  #update database
     print("Client added successfully.")
 
@@ -57,6 +58,7 @@ def update_client(clients, client_id, name=None, dob=None, balance=None):
             clients[j].update({"dob": dob})
         if balance:
             clients[j].update({"balance": balance})
+            make_vip(clients, client_id)
                 # client["balance"]=balance
         save_clients(clients)
         print("Client updated successfully.")
@@ -105,12 +107,32 @@ def make_trasfer(clients, id_from, id_to, transfer_sum,limit=0): #limit is never
         if clients[j_from]["balance"]-transfer_sum>limit:  #checks limit
             clients[j_to]["balance"] += transfer_sum
             clients[j_from]["balance"] -= transfer_sum
+            make_vip(clients, id_from)
+            make_vip(clients, id_to)
+            print(id(clients))
             save_clients(clients)
             print(
                 f"Successfully transered {transfer_sum} from client with ID {id_from} to client with ID {id_to}"
             )
         else:
             print("Not enough funds")
+
+def make_vip(clients, client_id=-1):
+    if client_id==-1:
+        for client in clients:
+            if client["balance"]>10000:
+                client.update({"VIP":True})
+            else:
+                client.update({"VIP":False})
+    else:            
+        j=find_client(clients,client_id)
+        if j==None:   #checks id client exists, 
+            print("Customer does not exist.")
+        else: 
+            if clients[j]["balance"]>10000:
+                clients[j].update({"VIP":True})
+            else:
+                clients[j].update({"VIP":False})
     
 
 
